@@ -1,0 +1,165 @@
+<!-- {% block doc -%} -->
+<!DOCTYPE HTML>
+<html class="invisct">
+<!-- {%- block html %} -->
+<head>
+<!-- {%- block head %} -->
+<!-- {%- block styles %} -->
+	<link href="{{ url_for('static', filename = 'layout_1.css') }}" rel="stylesheet" type="text/css"/>
+	<link href="{{ url_for('static', filename = 'bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
+	<link href="{{ url_for('static', filename = 'bootstrap.css') }}" rel="stylesheet" type="text/css"/>
+	<!-- <link href="{{ url_for('static', filename = 'bootstrap.css') }}" rel="stylesheet" type="text/css"/> -->
+<!-- {%- endblock styles %} -->
+<!-- {%- endblock head %}	 -->
+
+</head>
+<body>
+	<!-- {% block body -%} -->
+	<div class="invisct" id="container">
+		<nav class="navbar navbar-expand-lg navbar-light bg-customer">
+		  <a class="navbar-brand" href="#">智能诊疗</a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		    <span class="navbar-toggler-icon"></span>
+		  </button>
+
+		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		    <ul class="navbar-nav mr-auto">
+		      <li class="nav-item active">
+		        <a class="nav-link" href="http://127.0.0.1:5000/show">主页 <span class="sr-only">(current)</span></a>
+		      </li>
+		    </ul>
+		  </div>
+		</nav>
+		
+		<div id="info" style="">
+			<div style="width:92%">
+				&nbsp&nbsp<img src="{{ url_for('static', filename = 'info.png') }}" class="rounded-circle icon1">
+				<span style="font-size: 18px" id="info_span">病患基本信息：</span>
+				
+				<span style="font-size: 18px">ID： </span><span id="ID" style="font-size: 18px; font-weight: lighter;">{{ data['ID号'] }}&nbsp&nbsp&nbsp</span>
+				<span style="font-size: 18px">姓名： </span><span style="font-size: 18px; font-weight: lighter;">{{ data['姓名'] | safe }}&nbsp&nbsp&nbsp</span>
+				<span style="font-size: 18px">性别： </span><span style="font-size: 18px; font-weight: lighter;">{{ data['性别_'] | safe }}&nbsp&nbsp&nbsp </span>
+				<span style="font-size: 18px">年龄： </span><span style="font-size: 18px; font-weight: lighter;">{{ data['年龄'] | safe }}岁&nbsp&nbsp&nbsp </span>
+				<span style="font-size: 18px">入院时间： </span><span style="font-size: 18px; font-weight: lighter;">{{ data['入院时间'] | safe }}&nbsp&nbsp&nbsp </span>
+
+			</div>
+			
+			<!-- <a id="next_page"><button type="button" class="btn btn-success">next ></button></a> -->
+			<div class="btn-group btn-group-sm">
+			  <button type="button" class="btn btn-secondary" onclick="pre()">Left</button>
+			  <button type="button" class="btn btn-secondary" onclick="next()">Right</button>
+			</div>
+			
+		</div>
+
+		<div id="content1">
+			<div class="nav">
+				<ul>
+				<li class="sn1 nav-li" id="title1" onclick="return swap_tab(1)" >
+					<img src="{{ url_for('static', filename = 'info.png') }}" class="rounded-circle icon2">
+					<div style="padding-top: 0px;float: right;"><span class="nav-name">病历</span></div>
+				</li>
+				<li class="sn2 nav-li" id="title2" onclick="return swap_tab(2)">
+					<img src="{{ url_for('static', filename = 'exam.png') }}" class="rounded-circle icon2">
+					<div style="padding-top: 0px;float: right;"><span class="nav-name">检查</span></div>
+				</li>
+				<li class="sn2 nav-li" id="title3" onclick="return swap_tab(3)">
+					<img src="{{ url_for('static', filename = 'huayan.png') }}" class="rounded-circle icon2">
+					<div style="padding-top: 0px;float: right;"><span class="nav-name">化验</span></div>
+					</li>
+				</ul>
+			</div>
+			<div class="sub_div invisct container" id="sd1" style="display:block">
+				<p><button class ="btn btn-outline-info btn-sm" id="button-xbs" role="button" value="1" >主诉 &laquo;</button></p>
+				<div class="bl_a invisct" id="bl_a_1" style="height:auto;">{{ data['主诉'] | safe }}</div>
+				<hr>
+				<p><button class ="btn btn-outline-info btn-sm" id="button-xbs" role="button" value="1" onclick="spread(this,'bl_a_2')">现病史 &laquo;</button></p>
+				<div class="bl_a invisct" id="bl_a_2" >{{ data['现病史'] | safe }}</div>
+				<hr>
+				<p><button class ="btn btn-outline-info btn-sm" id="button-xbs" role="button" value="1" onclick="spread(this,'bl_a_3')">既往史 &laquo;</button></p><div class="bl_a invisct" id="bl_a_3" style="height:auto;">{{ data['既往史'] | safe }}</div>
+				<hr>
+				<p><button class ="btn btn-outline-info btn-sm" id="button-xbs" role="button" value="1" >家族史 &laquo;</button></p><div class="bl_a invisct" id="bl_a_4" style="height:auto;">{{ data['家族史'] | safe }}</div>
+			</div>
+			<div class="sub_div invisct" id="sd2">
+			    <h3 style="text-align:center;">病人基本信息</h3>
+			    <table class="table table-bordered">
+				    <tr><td>体温</td><td>{{ data['体温'] }}℃</td></tr>
+				    <tr><td>脉搏</td><td>{{ data['脉搏'] }}次/分</td></tr>
+				    <tr><td>呼吸</td><td>{{ data['呼吸'] }}次/分</td></tr>
+				    <tr><td>血压</td><td>{{ data['血压高'] }}/{{ data['血压低'] }}mmHg</td></tr>
+				    <tr><td>体重</td><td>{{ data['体重'] }}kg</td></tr>
+				    <tr><td>身高</td><td>{{ data['身高'] }}m</td></tr>
+				    <tr><td>体格描述</td><td>{{ data['体格描述'] }}</td></tr>
+			    </table>
+            </div>
+			<div class="sub_div invisct" id="sd3" ><span>{{ data['化验'] | safe }}</span></div>
+			<div class="Clear"><!--如何你上面用到float,下面布局开始前最好清除一下。--></div>
+		</div>
+		
+		<div id="content2">
+			<div class="nav" id="nav2">
+				<ul>
+					<li class="sn1 nav-li-2" id="cnt1" onclick="return swap_tab_1(1)">
+						<img src="{{ url_for('static', filename = 'ill.png') }}" class="rounded-circle icon3">
+						<div style="padding-top: 10px;float: right;"><span class="nav-name">疑似疾病</span></div>
+					</li>
+					<li class="sn2 nav-li-2" id="cnt2" onclick="return swap_tab_1(2)" >
+						<img src="{{ url_for('static', filename = 'medi.png') }}" class="rounded-circle icon3">
+						<div style="padding-top: 10px;float: right;"><span class="nav-name">患病概率</span></div>
+					</li>
+					<li class="sn2 nav-li-2" id="cnt3" onclick="return swap_tab_1(3)">
+						<img src="{{ url_for('static', filename = 'exam.png') }}" class="rounded-circle icon3">
+						<div style="padding-top: 10px;float: right;"><span class="nav-name">关键检查</span></div>
+					</li>
+				</ul>
+			</div>
+
+			<div id="cn1" class="invisct sub_div" style="display:block"> 
+				<div id="mychart"style="width:95%; height: 95%;"></div>
+			</div>
+			<div id="cn2" class="invisct sub_div" style="display:none">
+				<div id="pie1"style="width:25%; height: 40%; float:left;"></div>
+				<div id="pie2"style="width:25%; height: 40%; float:left;"></div>
+				<div id="pie3"style="width:25%; height: 40%; float:left;"></div>
+				<div id="pie4"style="width:25%; height: 40%; float:left;"></div>
+				<div class="Clear"><!--如何你上面用到float,下面布局开始前最好清除一下。--></div>
+				<div id="pie5"style="width:25%; height: 40%;float:left;"></div>
+				<div id="pie6"style="width:25%; height: 40%;float:left;"></div>
+				<div id="pie7"style="width:25%; height: 40%;float:left;"></div>
+				<div id="pie8"style="width:25%; height: 40%;float:left;"></div>
+				<div class="Clear"><!--如何你上面用到float,下面布局开始前最好清除一下。--></div>
+			</div>
+			<div id="cn3" class="invisct sub_div" style="display:none"> <span>推荐用药</span></div>
+			<div class="Clear"><!--如何你上面用到float,下面布局开始前最好清除一下。--></div>
+			<div class="nav" id="nav3">
+				<ul>
+					<li class="sn1 nav-li-2" id="cnt1" >
+						<img src="{{ url_for('static', filename = 'medi.png') }}" class="rounded-circle icon3">
+						<div style="padding-top: 10px;float: right;"><span class="nav-name">初步诊断</span></div>
+					</li>
+				</ul>
+			</div>
+			<div id="cn4" class="invisct sub_div" > <span>{{ data['诊断结果'] }}</span></div>
+		</div>
+		
+		<div class="Clear"><!--如何你上面用到float,下面布局开始前最好清除一下。--></div>
+	</div>
+<!-- {%- endblock body %}	 -->
+	<div style="display: none">
+		<span id="diseases">{"diseases":[{"name":"冠状动脉粥样硬化 ","value":"{{ data['患病概率_冠状动脉粥样硬化'] }}"},{"name":"心律失常 ","value":"{{ data['患病概率_心律失常'] }}"},{"name":"心绞痛 ","value":"{{ data['患病概率_心绞痛'] }}"},{"name":"糖尿病 ","value":"{{ data['患病概率_糖尿病'] }}"},{"name":"脑动脉供血不足 ","value":"{{ data['患病概率_脑动脉供血不足'] }}"},{"name":"脑梗死 ","value":"{{ data['患病概率_脑梗死'] }}"},{"name":"高脂血症 ","value":"{{ data['患病概率_高脂血症'] }}"},{"name":"高血压 ","value":"{{data['患病概率_高血压'] }}"}]}</span>
+	</div>
+	<script type="text/javascript" src="{{ url_for('static', filename = 'echarts.common.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename = 'main_1.js') }}"></script>
+</body>
+	
+<script type="text/javascript">
+	var mychart =  echarts.init(document.getElementById('mychart'));
+	mychart.setOption(setCustomerBarOption());
+</script>
+<!-- {% block scripts %}	 -->
+
+<!-- {%- endblock scripts %} -->
+
+<!-- {%- endblock html %} -->
+</HTML>
+<!-- {% endblock doc -%} -->

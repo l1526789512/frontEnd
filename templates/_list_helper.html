@@ -1,0 +1,23 @@
+{% macro render_list(title, ls, name_prefix) %}
+<h3>{{ title }}</h3>
+<ul class="list-group">
+    {% for item in ls %}
+        <li class="list-group-item">
+         <input type="checkbox" name="{{ name_prefix }}_{{ item[0] }}" class="{{ name_prefix }}">
+         {{ item[1] }}
+        </li>
+    {% endfor %}
+</ul>
+{% endmacro %}
+
+{% macro render_list_radio(title, ls, name) %}
+<h3>{{ title }}</h3>
+<ul class="list-group">
+    {% for item in ls %}
+        <li class="list-group-item">
+         <input type="radio" name="{{ name }}" value="{{ item[0] }}">
+         {{ item[1] }}
+        </li>
+    {% endfor %}
+</ul>
+{% endmacro %}

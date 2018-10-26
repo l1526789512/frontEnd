@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% from "_list_helper.html" import render_list, render_list_radio %}
+
+{% block title %}Flasky{% endblock %}
+
+{% block body %}
+<div class="page-header">
+<h1>Hello Medical.</h1>
+</div>
+
+<div class="container">
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning" id="flash">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+
+            <form method="post" action="{{ url_for('main.index') }}" role="form">
+                {{ form.patient_id.label }} <input type="text" name="patient_id">
+
+                {{ render_list("诱因", form.cause_choices, "cause") }}
+                {{ render_list("部位", form.part_choices, "part") }}
+                {{ render_list("症状", form.symptom_choices, "symptom") }}
+                {{ render_list("缓解方式", form.alleviation_choices, "alleviation") }}
+                {{ render_list_radio("持续时间", form.duration_choices, "duration") }}
+
+            <input type="submit" class="btn btn-default" name="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        function check_binding(cls){
+            var last = $("." + cls + ":last");
+            var others = $("." + cls + ":not(:last)");
+            last.attr("checked", "checked");
+            
+            last.change(function(){
+                if($(this).is(":checked")){
+                    others.prop("checked", false);                    
+                }
+            });
+
+            others.change(function(){
+                if($(this).is(":checked")){
+                    last.prop("checked", false);                  
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $("#name").val("");
+
+            setTimeout(function(){
+                $("#flash").fadeOut("slow", function () {
+                    $("#flash").remove();
+                });
+            }, 1000);
+
+            $("input[name='duration']:last").attr("checked", "checked");
+            
+            check_binding("cause");
+            check_binding("part");
+            check_binding("symptom");
+            check_binding("alleviation");
+
+        });
+    </script>
+{% endblock scripts %}
+{% endblock %}

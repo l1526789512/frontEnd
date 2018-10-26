@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% from "_admin_helper.html" import  render_list_and_form %}
+{% block title %}Admin{% endblock %}
+
+{% block body %}
+
+{{ render_list_and_form("诱因", lists["causes"], forms["cause_form"], "cause") }}
+{{ render_list_and_form("部位", lists["parts"], forms["part_form"], "part") }}
+{{ render_list_and_form("症状", lists["symptoms"], forms["symptom_form"], "symptom") }}
+{{ render_list_and_form("缓解方式", lists["alleviations"], forms["alleviation_form"], "alleviation") }}
+{{ render_list_and_form("持续时间", lists["durations"], forms["duration_form"], "duration") }}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var suffix = ["cause", "part", "symptom", "alleviation", "duration"];
+            for (var i=0;i<suffix.length;i++) {
+                var s = suffix[i];
+                $("#add_" + s).ajaxForm(function(data){
+                    // alert(s);
+                    // alert("#add_" + s + " input[type=text]");
+                    // $("#add_" + s + " input[type=text]").val("");
+                });
+            }
+        });
+    </script>
+{% endblock scripts %}
+
+{% endblock %}

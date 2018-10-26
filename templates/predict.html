@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Flasky{% endblock %}
+
+{% block body %}
+<div class="page-header">
+<h1>Hello Medical.</h1>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+
+            <form method="post" action="{{ url_for('predictor.index') }}" role="form">
+                <ul class="list-group">
+                
+                </ul>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='Chart.min.js') }}"></script>
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var barChartData = {
+            labels: [],
+            datasets: [{
+                label: '诊断疾病概率',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: []
+            }]
+        };
+        var chart = new Chart(ctx, {
+                // The type of chart we want to create
+                type: 'bar',
+                // The data for our dataset
+                data: barChartData,
+                // Configuration options go here
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: 1.0
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                fontSize: 10
+                            }
+                        }]
+                    }
+                }
+        });
+        var radioGenerator = function (name) {
+            let ret = `<li class="list-group-item"><span>${name}</span><input type='radio' name=${name} class='radio_cls' value=1> 是 <input type='radio' name=${name} class='radio_cls' value=0> 否</li>`;
+            return ret;
+        };
+        var extractData = function (data) {
+            var labels = [];   
+            var probabilitys = [];         
+            for (var key in data.probabilitys) {
+                labels.push(key);
+                probabilitys.push(data.probabilitys[key][1]);
+            }
+            return [labels, probabilitys]
+        };
+        var updateChart = function (data) {
+            var ret = extractData(data);
+            var labels = ret[0];
+            var probabilitys = ret[1];
+            barChartData.labels = labels;
+            barChartData.datasets[0].data = probabilitys;
+            chart.update();
+        };
+        var handler = function (data) {
+            updateChart(data);
+            $('.radio_cls').attr("disabled", "disabled");
+            if (data.needed_feature!=null) {
+                $('.list-group').append(radioGenerator(data.needed_feature));
+            }
+            else {
+                alert("诊断结束");
+            }
+            $('.radio_cls').change(function(){
+                if($(this).is(":checked")) {
+                    $('.radio_cls').attr("disabled", false);
+                    $('form').ajaxSubmit({
+                        url: "{{ url_for('predictor.index') }}",
+                        type: 'post',
+                        dataType: 'json',
+                        beforeSubmit: function () {},
+                        success: handler,
+                        clearForm: false, 
+                        resetForm: false
+                    });                 
+                }
+            });
+        };
+        $(document).ready(function (argument) {
+            $.ajax({
+                type: "POST",
+                url: "{{ url_for('predictor.index') }}",
+                data: {},
+                success: handler,
+                dataType: "json"
+            });
+        });
+    </script>
+{% endblock scripts %}
+{% endblock %}
